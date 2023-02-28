@@ -1,25 +1,23 @@
 var Key = 'bdebbabb7b2ac75814efae181908c540';
 var searchInput = document.getElementById('textBox');
 var searchBtn = document.querySelector('searchButton');
-var savedSearches = [];
+var previousSearches = [];
 
-var previousSearches = function(cityName) {
-  var searchedCity = document.querySelector('.searchResults');
-  searchedCity.text(cityName)
-}
 
-var searchHistory = (localStorage.searchHistory) ? JSON.parse(localStorage.searchHistory) : [];
 function saveSearch() {
   var savedSearch = document.getElementById("textBox").value;
   localStorage.setItem("savedText", savedSearch);
-  searchHistory.push(savedSearch);
-  localStorage.searchHistory = JSON.stringify(searchHistory);
   console.log(savedSearch);
-  alert("Search saved successfully: " + savedSearch);
-};
+  // alert("Search saved successfully: " + savedSearch);
+  previousSearches.push(savedSearch);
+  previousSearches.slice(0,7);
+  $("li.city-list").text(savedSearch);
+
+} 
+;
 
 document.getElementById('searchBtn').onclick = function(event) {
-  alert("Search button was clicked");
+  // alert("Search button was clicked");
   saveSearch();
   getWeather();
   event.preventDefault();
