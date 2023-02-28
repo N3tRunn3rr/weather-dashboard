@@ -8,11 +8,14 @@ var previousSearches = function(cityName) {
   searchedCity.text(cityName)
 }
 
+var searchHistory = (localStorage.searchHistory) ? JSON.parse(localStorage.searchHistory) : [];
 function saveSearch() {
-  var data = document.getElementById("textBox").value;
-  localStorage.setItem("savedText", data);
-  console.log(data);
-  alert("Search saved successfully: " + data);
+  var savedSearch = document.getElementById("textBox").value;
+  localStorage.setItem("savedText", savedSearch);
+  searchHistory.push(savedSearch);
+  localStorage.searchHistory = JSON.stringify(searchHistory);
+  console.log(savedSearch);
+  alert("Search saved successfully: " + savedSearch);
 };
 
 document.getElementById('searchBtn').onclick = function(event) {
@@ -24,7 +27,7 @@ document.getElementById('searchBtn').onclick = function(event) {
 
 function getWeather() {
 var selectedCity = document.getElementById('textBox').value;
-fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=${Key}&units=metric`)
+fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=${Key}&units=imperial`)
   .then(function (response) {
     return response.json();
   })
@@ -34,32 +37,28 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=$
     console.log(response);
     console.log(lon);
     console.log(lat);
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${Key}`)
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${Key}`)
       .then(function (response) {
       return response.json();
   })
   .then(function(response){
     console.log(response)
     
-    var forecastArray1 = response.list[3].dt_txt;
-    var timeArray = forecastArray1.split(' ');
-    console.log(timeArray);
+    var forecastHours = response.list[0].dt_txt;
+    //date and time for response
+    console.log(forecastHours);
 
-    var forecastArray2 = response.list[11].dt_txt;
-    var timeArray2 = forecastArray2.split(' ');
-    console.log(timeArray2);
+    var forecastTemp = response.list[0].main.temp;
+    //temperature for response
+    console.log(forecastTemp + ' Degrees Fahrenheit');
 
-    var forecastArray3 = response.list[19].dt_txt;
-    var timeArray3 = forecastArray3.split(' ');
-    console.log(timeArray3);
+    var forecastWind = response.list[0].wind.speed;
+    //wind speed for response
+    console.log(forecastWind + ' mph');
 
-    var forecastArray4 = response.list[27].dt_txt;
-    var timeArray4 = forecastArray4.split(' ');
-    console.log(timeArray4);
-
-    var forecastArray5 = response.list[5].dt_txt;
-    var timeArray5 = forecastArray5.split(' ');
-    console.log(timeArray5);
+    var forecastHumidity = response.list[0].main.humidity;
+    //humidity for response
+    console.log(forecastHumidity + '%');
 
     //TODO: work on getting the results back for the same time block each day
     //TODO: possibly using an if else statement with between two values to select only those specific time blocks that I want the datasets for
