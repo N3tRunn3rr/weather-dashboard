@@ -4,29 +4,27 @@ var searchBtn = document.querySelector('searchButton');
 var previousSearches = [];
 
 //TODO: everything is working except getting the search history to display on the page and to update the buttons with the search history
+//TODO: I can get the searches to list as previous searches but they have no click functionality
 
 function saveSearch() {
   var savedSearch = document.getElementById("textBox").value;
   localStorage.setItem("savedText", savedSearch);
   console.log(savedSearch);
   // alert("Search saved successfully: " + savedSearch);
-  previousSearches.push(JSON.stringify(savedSearch));
+  previousSearches.push(savedSearch);
   console.log('Search History Array: ' + previousSearches);
   localStorage.setItem('previousSearches',(previousSearches));
+  $('li.city-list').text(previousSearches);
+
   // var cities = localStorage.getItem("savedText");
-  $("button.search-history1").on("click", function() {
-    $("button.search-history1").attr("href", savedSearch);
-    // $("button.search-history1").text(savedSearch);
-    // var history = localStorage.getItem("previousSearches");
-    $("button.search-history1").on("click", function(e) {
-      e.preventDefault();
-      getWeather();
-  })
-})
-};
-  
-  // $("li.city-list").text(previousSearches);
-;
+  // $("button.search-history1").on("click", function() {
+  //   $("button.search-history1").attr("href", savedSearch);
+  //   $("button.search-history1").text(savedSearch);
+  //   // var history = localStorage.getItem("previousSearches");
+  //   $("button.search-history1").on("click", function(e) {
+  //     e.preventDefault();
+  //     getWeather();
+  };
 
 document.getElementById('searchBtn').onclick = function(event) {
   // alert("Search button was clicked");
@@ -43,6 +41,13 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=$
   })
   .then(function (response) {
 
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    let currentDate = `${month}-${day}-${year}`;
+    $('p.date').text('Date: ' + currentDate);
+    console.log(currentDate);
     
     var currentTemp = response.main.temp;
     $('p.current-temp').text('Temp: ' + currentTemp + ' Degrees Fahrenheit');
@@ -72,12 +77,12 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=$
     console.log(response)
     
     //date and time for response
-    var forecastHours = response.list[0].dt_txt;
+    var forecastHours = response.list[0].dt_txt.substring(0, 10);
     $('p#future-date-1').text('Date: ' + forecastHours);
     console.log(forecastHours);
 
     //temperature for response
-    var forecastTemp = response.list[0].main.temp;
+    var forecastTemp = response.list[0].main.temp_max;
     $('p#future-temp-1').text('Temp: ' + forecastTemp + ' Degrees Fahrenheit');
     console.log(forecastTemp + ' Degrees Fahrenheit');
 
@@ -97,11 +102,11 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=$
     $('img.icon1').attr('src', iconUrl1);
 
     //Card 2 
-    var forecastHours2 = response.list[8].dt_txt;
+    var forecastHours2 = response.list[8].dt_txt.substring(0, 10);
     $('p#future-date-2').text('Date: ' + forecastHours2);
     console.log(forecastHours2);
     
-    var forecastTemp2 = response.list[8].main.temp;
+    var forecastTemp2 = response.list[8].main.temp_max;
     $('p#future-temp-2').text('Temp: ' + forecastTemp2 + ' Degrees Fahrenheit');
     console.log(forecastTemp2 + ' Degrees Fahrenheit');
     
@@ -118,11 +123,11 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=$
     $('img.icon2').attr('src', iconUrl2);
 
     //Card 3
-    var forecastHours3 = response.list[16].dt_txt;
+    var forecastHours3 = response.list[16].dt_txt.substring(0, 10);
     $('p#future-date-3').text('Date: ' + forecastHours3);
     console.log(forecastHours3);
   
-    var forecastTemp3 = response.list[16].main.temp;
+    var forecastTemp3 = response.list[16].main.temp_max;
     $('p#future-temp-3').text('Temp: ' + forecastTemp3 + ' Degrees Fahrenheit');
     console.log(forecastTemp3 + ' Degrees Fahrenheit');
   
@@ -139,11 +144,11 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=$
     $('img.icon3').attr('src', iconUrl3);
 
     //Card 4
-    var forecastHours4 = response.list[24].dt_txt;
+    var forecastHours4 = response.list[24].dt_txt.substring(0, 10);
     $('p#future-date-4').text('Date: ' + forecastHours4);
     console.log(forecastHours4);
     
-    var forecastTemp4 = response.list[24].main.temp;
+    var forecastTemp4 = response.list[24].main.temp_max;
     $('p#future-temp-4').text('Temp: ' + forecastTemp4 + ' Degrees Fahrenheit');
     console.log(forecastTemp4 + ' Degrees Fahrenheit');
     
@@ -160,11 +165,11 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&appid=$
     $('img.icon4').attr('src', iconUrl4);
 
     //Card 5
-    var forecastHours5 = response.list[32].dt_txt;
+    var forecastHours5 = response.list[32].dt_txt.substring(0, 10);
     $('p#future-date-5').text('Date: ' + forecastHours5);
     console.log(forecastHours5);
   
-    var forecastTemp5 = response.list[32].main.temp;
+    var forecastTemp5 = response.list[32].main.temp_max;
     $('p#future-temp-5').text('Temp: ' + forecastTemp5 + ' Degrees Fahrenheit');
     console.log(forecastTemp5 + ' Degrees Fahrenheit');
   
