@@ -3,41 +3,41 @@ var searchInput = document.getElementById('textBox');
 var searchBtn = document.querySelector('searchButton');
 var previousSearches = [];
 
-//TODO: everything is working except getting the search history to display on the page and to update the buttons with the search history
-//TODO: I can get the searches to list as previous searches but they have no click functionality
 
 function saveSearch() {
   var savedSearch = document.getElementById("textBox").value;
   localStorage.setItem("savedText", savedSearch);
   console.log(savedSearch);
-  // alert("Search saved successfully: " + savedSearch);
   previousSearches.push(savedSearch);
   console.log('Search History Array: ' + previousSearches);
   localStorage.setItem('previousSearches',(previousSearches));
-  // $('li.city-list').text(previousSearches);
+  var searchHistory = previousSearches.slice(0,8);
 
   // looping thorough the PRevious History
-  var newButton = $("<button>").attr("id", previousSearches[0]).text(previousSearches[0]);
-  console.log(newButton);
-  $(".city-container").append(newButton);
-  // for (let i = 0; i < previousSearches.length; i++) {
-  //   text += cars[i] + "<br>";
-  // }
-  
-  // var cities = localStorage.getItem("savedText");
-  // $("button.search-history1").on("click", function() {
-  //   $("button.search-history1").attr("href", savedSearch);
-  //   $("button.search-history1").text(savedSearch);
-  //   // var history = localStorage.getItem("previousSearches");
-  //   $("button.search-history1").on("click", function(e) {
-  //     e.preventDefault();
-  //     var cityName = event.target.value  // --> will just be a value
-  //     console.log($(this))   // --> will be the button (ARRAY of buttons/things) $(this)[0]
-  //     getWeather(cityName);  // once we have the value we pass it to our API (Async call)
+  for(var i = 0; i < searchHistory.length; i++) {
+    var city = searchHistory[i];
+    var buttonExists = false;
+    $('.city-container button').each(function() {
+      if ($(this).text() === city) {
+        buttonExists = true;
+      }
+    });
+    if (!buttonExists) {
+      var newButton = $('<button>').attr('id', city).text(city);
+      $('.city-container').append(newButton);
+      if (searchHistory.length >= 8) {
+        searchHistory.shift();
+      }
+    }
   };
+};
+
+document.getElementById('city-container').addEventListener('click', function(event) {
+  var cityName = event.target.value;
+  getWeather(cityName);
+});
 
 document.getElementById('searchBtn').onclick = function(event) {
-  // alert("Search button was clicked");
   saveSearch();
   getWeather();
   event.preventDefault();
